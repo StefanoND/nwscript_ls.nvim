@@ -1,0 +1,50 @@
+-- local util = require("lspconfig.util")
+
+-- local lazyPath = function()
+--   return vim.fn.stdpath("data") .. "/lazy"
+-- end
+
+-- local nwServerJSPath = function()
+--   if os.getenv("NWN_LSP") then
+--     return os.getenv("NWN_LSP")
+--   end
+--   return lazyPath() .. "/nwscript-ee-language-server/server/out/server.js"
+-- end
+
+-- local nwLSPServerArgs = { "--stdio" } -- Required
+--
+-- local functions = require("nwscript_ls.functions")
+
+-- local serverCommand = function()
+--   if functions.findExecutable("nwscript_ls") then
+--     return "nwscript_ls"
+--   end
+--   if functions.findExecutable("node") and functions.findFile(nwServerJSPath()) then
+--     return "node", nwServerJSPath(), unpack(nwLSPServerArgs)
+--   end
+--   return nil
+-- end
+
+---@type vim.lsp.Config
+return {
+  default_config = {
+    flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
+    name = "nwscript_ls",
+    cmd = { "nwscript_ls" },
+    filetypes = { "nss", "nwscript" },
+    root_markers = { "nasher.cfg", ".git" },
+    -- root_dir = function(fname)
+    --   return vim.fs.dirname(vim.fs.find({ "nasher.cfg", ".git" }, { path = fname, upward = true })[1])
+    -- end,
+    message_level = vim.lsp.protocol.MessageType.Error,
+  },
+  docs = {
+    description = [[
+      https://github.com/StefanoND/nwscript_ls.nvim
+
+      Language Server Protocol for Neverwinter Nights' NWScript
+
+      nwscript_ls can be installed via npm:
+      ]],
+  },
+}
