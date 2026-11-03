@@ -21,7 +21,6 @@ Contributions and PRs are welcome.
 - [conform](https://github.com/stevearc/conform.nvim) support
 - [doxygen](https://github.com/doxygen/doxygen) support
 - [neogen](https://github.com/danymat/neogen) support
-- [nvim-ufo](https://github.com/kevinhwang91/nvim-ufo) fold support
 - [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) and [mini.icons](https://github.com/echasnovski/mini.icons) Icon support
 - [plenary](https://github.com/nvim-lua/plenary.nvim) support
 - [rainbow-delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim) Colored Parentheses and Brackets support
@@ -45,7 +44,6 @@ Contributions and PRs are welcome.
 - [LuaSnip](https://github.com/L3MON4D3/LuaSnip)/[ultisnips](https://github.com/SirVer/ultisnips) -- Optional, Snippets for NWScript
 - [conform](https://github.com/stevearc/conform.nvim) -- Optional, none-ls/null-ls "replacement"
 - [neogen](https://github.com/danymat/neogen) -- Optional, Annotation generator
-- [nvim-ufo](https://github.com/kevinhwang91/nvim-ufo) -- Optional, Fold support
 - [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) -- Optional, Icon support for NWScript
 - [mini.icons](https://github.com/echasnovski/mini.icons) -- Optional, Icon support for NWScript
 - [plenary](https://github.com/nvim-lua/plenary.nvim) -- Optional, Provides utility functions for plugins .nss extension
@@ -93,25 +91,23 @@ return { -- NWScript
     "L3MON4D3/LuaSnip",
     "akinsho/bufferline.nvim",
     "danymat/neogen",
-    "folke/which-key.nvim",
-    "kevinhwang91/nvim-ufo",
     "numToStr/Comment.nvim",
     "nvim-lua/plenary.nvim",
     "echasnovski/mini.nvim", -- I use it with mock nvim-web-devicons
     "nvim-treesitter/nvim-treesitter",
     "stevearc/conform.nvim",
-    {
-      "StefanoND/vim-nwscript",
-      config = function()
-        vim.cmd([[
-          let g:nwscript#modules#enabled = ['ctags', 'format']
-          let g:nwscript#modules#disabled = ['fold']
-          let g:nwscript#format#textwidth = 105
-          let g:nwscript#format#options = 'croqwa2lj'
-          let g:nwscript#format#whitespace = 1
-        ]])
-      end,
-    },
+    -- {
+    --   "StefanoND/vim-nwscript",
+    --   config = function()
+    --     vim.cmd([[
+    --       let g:nwscript#modules#enabled = ['ctags', 'format']
+    --       let g:nwscript#modules#disabled = ['fold']
+    --       let g:nwscript#format#textwidth = 105
+    --       let g:nwscript#format#options = 'croqwa2lj'
+    --       let g:nwscript#format#whitespace = 1
+    --     ]])
+    --   end,
+    -- },
   },
   config = function()
     require("nwscript").setup()
@@ -344,7 +340,6 @@ Keymaps not listed here are using your own configured keymaps or the plugin's de
 - [@SirVer](https://github.com/SirVer) for [ultisnips](https://github.com/SirVer/ultisnips)
 - [@danymat](https://github.com/danymat) for [neogen](https://github.com/danymat/neogen)
 - [@folke](https://github.com/folke) for [which-key](https://github.com/folke/which-key.nvim)
-- [@kevinhwang91](https://github.com/kevinhwang91) for [nvim-ufo](https://github.com/kevinhwang91/nvim-ufo)
 - [@numToStr](https://github.com/numToStr) for [Comment](https://github.com/numToStr/Comment.nvim)
 - [@nvim-lua](https://github.com/nvim-lua) for [plenary](https://github.com/nvim-lua/plenary.nvim)
 - [@nvim-tree](https://github.com/nvim-tree) for [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)
@@ -364,6 +359,8 @@ Keymaps not listed here are using your own configured keymaps or the plugin's de
 <a name="CHANGELOG"></a>
 
 ## Changelog
+
+    Removed support for nvim-ufo's folding
 
     Added support for mini.icons
     Added support for square brackets (only top level works), check "Note" bellow

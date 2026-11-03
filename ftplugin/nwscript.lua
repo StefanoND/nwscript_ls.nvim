@@ -1,15 +1,10 @@
-local ft = {}
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
 
-function ft.ftplugin()
-  vim.opt.expandtab = true
-  vim.opt.smartindent = true
-  vim.opt.tabstop = 4
-  vim.opt.softtabstop = 4
-  vim.opt.shiftwidth = 4
-end
-
-function ft.syntax()
-  vim.cmd([[
+vim.cmd([[
     set syntax=nwscript.doxygen
     hi! link doxygenStartL Comment
     hi! link doxygenParam Special
@@ -20,7 +15,10 @@ function ft.syntax()
     hi! link doxygenBriefWord Special
     hi! link doxygenBrief Comment
     hi! TSComment gui=NONE
-  ]])
-end
+]])
 
-return ft
+local win = vim.api.nvim_get_current_win()
+vim.wo[win].foldmethod = "expr"
+vim.wo[win].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.wo[win].foldlevel = 99
+vim.wo[win].foldcolumn = "1"

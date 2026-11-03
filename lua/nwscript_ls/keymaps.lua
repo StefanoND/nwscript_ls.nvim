@@ -7,7 +7,7 @@ M.setKeymaps = function(client, bufnr)
 
   local funcs = require("nwscript_ls.functions")
 
-  if funcs.isLoaded("which-key") ~= nil then
+  if funcs.is_loaded("which-key") ~= nil then
     local wk = require("which-key")
     wk.add({
       mode = { "n" },
@@ -15,56 +15,56 @@ M.setKeymaps = function(client, bufnr)
         {
           "<leader>nwc",
           function()
-            funcs.nasherCompile(false)
+            funcs.nasher_compile(false)
           end,
           desc = "Compile current script",
         },
         {
           "<leader>nwC",
           function()
-            funcs.nasherCompile(true)
+            funcs.nasher_compile(true)
           end,
           desc = "Compile all scripts",
         },
         {
           "<leader>nwm",
           function()
-            funcs.nasherInstall("main", "-y")
+            funcs.nasher_install("main", "-y")
           end,
           desc = "Pack and install project into module",
         },
         {
           "<leader>nwM",
           function()
-            funcs.nasherUnpack("main", "-y")
+            funcs.nasher_unpack("main", "-y")
           end,
           desc = "Unpack module to project folder",
         },
         {
           "<leader>nwh",
           function()
-            funcs.nasherInstall("haks", "-y")
+            funcs.nasher_install("haks", "-y")
           end,
           desc = "Pack and install project into separate haks",
         },
         {
           "<leader>nwH",
           function()
-            funcs.nasherUnpack("haks", "-y")
+            funcs.nasher_unpack("haks", "-y")
           end,
           desc = "Unpack haks to project folder",
         },
         {
           "<leader>nwt",
           function()
-            funcs.nasherInstall("tlk", "-y")
+            funcs.nasher_install("tlk", "-y")
           end,
           desc = "Pack and install project into tlk",
         },
         {
           "<leader>nwT",
           function()
-            funcs.nasherUnpack("tlk", "-y")
+            funcs.nasher_unpack("tlk", "-y")
           end,
           desc = "Unpack tlk to project folder",
         },
@@ -72,28 +72,28 @@ M.setKeymaps = function(client, bufnr)
     })
   else
     kmn("<leader>nwc", function()
-      funcs.nasherCompile(false)
+      funcs.nasher_compile(false)
     end, "Compile current script")
     kmn("<leader>nwC", function()
-      funcs.nasherCompile(true)
+      funcs.nasher_compile(true)
     end, "Compile all scripts")
     kmn("<leader>nwm", function()
-      funcs.nasherInstall("main", "-y")
+      funcs.nasher_install("main", "-y")
     end, "Pack project into module")
     kmn("<leader>nwM", function()
-      funcs.nasherUnpack("main", "-y")
+      funcs.nasher_unpack("main", "-y")
     end, "Unpack module to project folder")
     kmn("<leader>nwh", function()
-      funcs.nasherInstall("haks", "-y")
+      funcs.nasher_install("haks", "-y")
     end, "Pack project into module")
     kmn("<leader>nwH", function()
-      funcs.nasherUnpack("haks", "-y")
+      funcs.nasher_unpack("haks", "-y")
     end, "Unpack module to project folder")
     kmn("<leader>nwt", function()
-      funcs.nasherInstall("tlk", "-y")
+      funcs.nasher_install("tlk", "-y")
     end, "Pack project into module")
     kmn("<leader>nwT", function()
-      funcs.nasherUnpack("tlk", "-y")
+      funcs.nasher_unpack("tlk", "-y")
     end, "Unpack module to project folder")
   end
 end
