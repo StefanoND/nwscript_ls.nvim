@@ -90,12 +90,17 @@ return { -- NWScript
     "HiPhish/rainbow-delimiters.nvim",
     "L3MON4D3/LuaSnip",
     "akinsho/bufferline.nvim",
-    "danymat/neogen",
     "numToStr/Comment.nvim",
     "nvim-lua/plenary.nvim",
     "echasnovski/mini.nvim", -- I use it with mock nvim-web-devicons
     "nvim-treesitter/nvim-treesitter",
     "stevearc/conform.nvim",
+    {
+      "danymat/neogen",
+      config = function()
+        require("neogen").setup()
+      end,
+    },
     -- {
     --   "StefanoND/vim-nwscript",
     --   config = function()

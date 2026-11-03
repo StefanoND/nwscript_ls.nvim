@@ -27,6 +27,7 @@ M.setup = function(opts)
   require("nwscript_ls.snippets").setup() -- Enable snippets (LuaSnip/UltiSnipts) for NWScript
   require("nwscript_ls.neogen").setup() -- Enable "neogen" comment generation functionality for NWScript
   require("nwscript_ls.icons").setup() -- Adds a icon (mini/nvim-web-devicons) for NWScript
+  require("nwscript_ls.comment").setup() -- Enable comment for NWScript
 
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(event)
