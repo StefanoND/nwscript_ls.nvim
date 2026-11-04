@@ -53,11 +53,6 @@ Contributions and PRs are welcome.
 
 ### External
 
-- [nvm](https://github.com/nvm-sh/nvm) -- Optional, automates installation of Node.JS and npm
-- [Node.js](https://github.com/nodejs/node) -- Required, Executable for LSP
-- [npm](https://github.com/npm/cli) -- Required, JavaScript package manager (Needed for Node.js)
-- [yarn](https://github.com/yarnpkg/berry) -- Required, "Dependency" manager
-- [vsce](https://github.com/microsoft/vscode-vsce) -- Required, VS Code extension manager
 - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) -- Optional, Formatting
 - [doxygen](https://github.com/doxygen/doxygen) -- Optional, Documentation Generation
 
@@ -256,37 +251,15 @@ return {
   }
 ```
 
-<a name="NVM"></a>
+<a name="AUTO_BUILD"></a>
 
 ## Building [nwscript-ee-language-server](https://github.com/StefanoND/nwscript-ee-language-server) automatically
 
-You must have at least [nvm](https://github.com/nvm-sh/nvm) installed for this to work, you can copy-paste the code bellow
-
-<a name="NVM_BASH"></a>
-
-### Bash
-
-```bash
-NVM_VERSION=$(curl -s "https://api.github.com/repos/nvm-sh/nvm/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*') && \
-curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh" | bash && \
-export NVM_DIR="$HOME/.config/nvm" && \
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-```
-
-<a name="NVM_BASH_MULTILINE"></a>
-
-<details><summary>Same command as above but in a single line in case your terminal have issues with multi-line</summary>
-
-```bash
-NVM_VERSION=$(curl -s "https://api.github.com/repos/nvm-sh/nvm/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*') && curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh" | bash && export NVM_DIR="$HOME/.config/nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-```
-
-</details>
+You must have at least [git](https://git-scm.com), [tar](https://www.gnu.org/software/tar) and [wget](https://www.gnu.org/software/wget) installed for this to work
 
 If you don't want to manually [building-and-running](https://github.com/StefanoND/nwscript-ee-language-server/blob/main/README.md#building-and-running) the LSP server, you can just add "autoBuild = true" in your setup() like so:
 
-Make sure you have nvm installed mentioned [above](#NVM)
+Make sure you have git, tar and wget installed mentioned [above](#AUTO_BUILD)
 
 ```lua
     nwscript.setup({
@@ -354,13 +327,8 @@ Keymaps not listed here are using your own configured keymaps or the plugin's de
 - [@stevearc](https://github.com/stevearc) for [conform](https://github.com/stevearc/conform.nvim)
 - [@HiPhish](https://github.com/HiPhish) for [rainbow-delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
 
-- [@nvm-sh](https://github.com/nvm-sh) for [nvm](https://github.com/nvm-sh/nvm)
-- [@nodejs](https://github.com/nodejs) for [Node.js](https://github.com/nodejs/node)
-- [@npm](https://github.com/npm) for [npm](https://github.com/npm/cli)
 - [@doxygen](https://github.com/doxygen) for [doxygen](https://github.com/doxygen/doxygen)
 - [@llvm](https://github.com/llvm) for [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
-- [@microsoft](https://github.com/microsoft) for [vsce](https://github.com/microsoft/vscode-vsce)
-- [@yarnpkg](https://github.com/yarnpkg) for [yarn](https://github.com/yarnpkg/berry)
 
 <a name="CHANGELOG"></a>
 
