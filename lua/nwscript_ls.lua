@@ -40,6 +40,31 @@ M.setup = function(opts)
       end
     end,
   })
+
+  vim.lsp.enable({
+    "nwscript_ls",
+  }, true)
+
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "nwscript", "nss" },
+    callback = function()
+      local buf = vim.api.nvim_get_current_buf()
+
+      -- Try to guess the filetype (may change later on during Neovim startup)
+      local ft = vim.filetype.match({ buf = buf })
+      if ft then
+        -- Add treesitter highlights and fallback to syntax
+        local lang = vim.treesitter.language.get_lang(ft)
+
+        if not (lang and pcall(vim.treesitter.start, buf, lang)) then
+          vim.bo[buf].syntax = ft
+        end
+
+        -- Trigger early redraw
+        vim.cmd([[redraw]])
+      end
+    end,
+  })
 end
 
 return M

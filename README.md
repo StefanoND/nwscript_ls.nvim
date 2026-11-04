@@ -69,12 +69,11 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 return { -- Plug'n'play no extra configuration required
-  "StefanoND/nwscript_lsp.nvim",
-  ft = "nwscript",
-  event = "VeryLazy"
+  "StefanoND/nwscript_ls.nvim",
+  ft = { "nwscript", "nss" },
+  lazy = false,
   config = function()
-    local nwscript = require("nwscript")
-    nwscript.setup()
+    require("nwscript_ls").setup()
   end,
 }
 ```
@@ -83,9 +82,11 @@ return { -- Plug'n'play no extra configuration required
 
 ```lua
 return { -- NWScript
-  "StefanoND/nwscript_lsp.nvim",
-  ft = "nwscript",
-  event = "VeryLazy",
+  "StefanoND/nwscript_ls.nvim",
+  filetype = { "nwscript", "nss" },
+  ft = { "nwscript", "nss" },
+  lazy = false,
+  -- event = "VeryLazy",
   dependencies = {
     "HiPhish/rainbow-delimiters.nvim",
     "L3MON4D3/LuaSnip",
