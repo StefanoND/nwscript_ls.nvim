@@ -1,6 +1,6 @@
 <a name="NWSCRIPT_LSP"></a>
 
-# nwscript_lsp.nvim
+# nwscript_ls.nvim
 
 NWScript: EE LSP is a Neovim plugin for the NWScript language
 
