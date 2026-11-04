@@ -6,16 +6,14 @@ SUCCESS="SUCCESS"
 INFO="INFO"
 WARN="WARN"
 ERROR="ERROR"
-NEXT="\n"
-END="\n\n"
 
 print_log() {
-  printf "%s: [%s] %s %s" "$(date)" "$1" "$2" "$3" | tee -a "$LOGPATH"
+  printf "%s: [%s] %s %s\n" "$(date)" "$1" "$2" | tee -a "$LOGPATH"
   sync
 }
 
 if ! [ "$EUID" -ne 0 ]; then
-  print_log "$WARN" "Don't run this script as root. Exiting" "$END"
+  print_log "$WARN" "Don't run this script as root. Exiting"
   sleep 1s
   exit 1
 fi
@@ -26,139 +24,74 @@ commandExists() {
 
 PKGS=(
   'git'
-  'curl'
+  'wget'
+  'tar'
 )
 
 for PKG in "${PKGS[@]}"; do
   if ! commandExists "$PKG"; then
-    print_log "$ERROR" "$PKG not found. Exiting." "$END"
+    print_log "$ERROR" "$PKG not found. Exiting."
     exit 1
   fi
 done
 
-HOMEPATH="$HOME"
-APPSPATH="$HOMEPATH/.apps"
-LSPROOTPATH="$APPSPATH/nwscript_ls"
-OUTPATH="$LSPROOTPATH/server/out"
-LSPPATH="$OUTPATH/server.js"
-GITREPO='https://github.com/StefanoND/nwscript-ee-language-server.git'
+APPS_PATH="$HOME/.apps"
+LSP_ROOT_PATH="$APPS_PATH/nwscript_ls"
 
-if [ -f "$LSPPATH" ]; then
-  print_log "$SUCCESS" "LSP is already built. Nothing else to do." "$END"
+LSP_PATH="$LSP_ROOT_PATH/bin/nwscript-ee-language-server.cjs"
+
+FILE_NAME='nwscript-ee-language-server-4.1.0_snd'
+NEW_FILE_NAME='nwscript_ls'
+LSP_URL="https://github.com/StefanoND/nwscript-ee-language-server/releases/download/v4.1.0_snd/$FILE_NAME.tgz"
+
+if [ -f "$LSP_PATH" ]; then
+  print_log "$SUCCESS" "LSP is already installed. Nothing else to do."
   exit 0
 fi
 
-BACKEDUPNPM="n"
-
-if commandExists 'npm' && ! commandExists 'nvm'; then
-  if ! grep -i "prefix" "$HOMEPATH/.npmrc"; then
-    BACKEDUPNPM="y"
-    print_log "$INFO" "Creating a backup of '$HOMEPATH/.npmrc'." "$NEXT"
-    mv "$HOMEPATH/.npmrc" "$HOMEPATH/.npmrc.old" && sync
-    touch "$HOMEPATH/.npmrc" && sync
-    print_log "$INFO" "Setting '$HOMEPATH/.local' as npm's default install path." "$NEXT"
-    npm config set prefix "$HOMEPATH/.local" && sync
-  fi
+if ! [ -d "$APPS_PATH" ]; then
+  print_log "$INFO" "Creating '$APPS_PATH' folder."
+  mkdir -p "$APPS_PATH" && sync
+else
+  print_log "$INFO" "'$APPS_PATH' folder already exists, continuing."
 fi
 
-if ! commandExists 'nvm'; then
-  print_log "$WARN" "'nvm' not found. Installing 'Node.js' and 'npm' automatically not possible" "$NEXT"
+if ! [ -d "$HOME/.local/bin" ]; then
+  print_log "$INFO" "Creating '$HOME/.local/bin' folder."
+  mkdir -p "$HOME/.local/bin" && sync
+else
+  print_log "$INFO" "'$HOME/.local/bin' folder already exists, continuing."
 fi
 
-if ! commandExists 'nvm' && ! commandExists 'node'; then
-  print_log "$ERROR" "'Node.js' not found. Please install it or install 'nvm'." "$END"
-  exit 1
+if ! [ -d "$LSP_ROOT_PATH" ]; then
+  print_log "$INFO" "Downloading LSP to '$APPS_PATH' folder."
+  cd "$APPS_PATH"
+  wget "$LSP_URL" && sync
+  mv "$FILE_NAME.tgz" "$NEW_FILE_NAME.tgz"
+  tar -xvf "$NEW_FILE_NAME.tgz"
+  mv package "$NEW_FILE_NAME"
+else
+  print_log "$INFO" "LSP is already in '$APPS_PATH' folder already exists, continuing."
 fi
 
-# This SHOULD never happen
-if ! commandExists 'nvm' && ! commandExists 'npm'; then
-  print_log "$ERROR" "'npm' not found. Please install it or install 'nvm'" "$END"
-  exit 1
+if [ -d "$LSP_ROOT_PATH" ]; then
+  cd "$LSP_ROOT_PATH" || exit 1
 fi
 
-if ! commandExists 'node' && ! commandExists 'npm' && commandExists 'nvm'; then
-  print_log "$INFO" "Installing 'Node.JS' and 'npm'." "$NEXT"
-  nvm install --latest-npm node && sync
+if [ -f "$HOME/.local/bin/nwscript_ls" ]; then
+  print_log "$INFO" "Backing up '$HOME/.local/bin/nwscript_ls'"
+  mv "$HOME/.local/bin/nwscript_ls" "$HOME/.local/bin/nwscript_ls.old" && sync
 fi
 
-if ! commandExists 'node' && commandExists 'npm' && commandExists 'nvm'; then
-  print_log "$INFO" "Installing 'Node.JS'." "$NEXT"
-  nvm install node && sync
+if ! [ -f "$HOME/.local/bin/nwscript_ls" ]; then
+  print_log "$INFO" "Creating '$HOME/.local/bin/nwscript_ls'"
+  touch "$HOME/.local/bin/nwscript_ls" && sync
+  printf "#!/usr/bin/env bash
+\"$HOME/.apps/nwscript_ls/bin/nwscript-ee-language-server.cjs\" --stdio" | tee "$HOME/.local/bin/nwscript_ls" && sync
 fi
 
-# This SHOULD never happen
-if commandExists 'node' && ! commandExists 'npm' && commandExists 'nvm'; then
-  print_log "$INFO" "Installing 'npm'." "$NEXT"
-  nvm install install-latest-npm && sync
-fi
+print_log "$INFO" "Making '$HOME/.local/bin/nwscript_ls' executable"
+chmod +x "$HOME/.local/bin/nwscript_ls"
 
-if ! [ -d "$APPSPATH" ]; then
-  print_log "$INFO" "Creating '$APPSPATH' folder." "$NEXT"
-  mkdir -p "$APPSPATH" && sync
-fi
-
-if ! [ -d "$HOMEPATH/.local/bin" ]; then
-  print_log "$INFO" "Creating '$HOMEPATH/.local/bin' folder." "$NEXT"
-  mkdir -p "$HOMEPATH/.local/bin" && sync
-fi
-
-if [ -d "$LSPROOTPATH" ]; then
-  print_log "$INFO" "Updating LSP repo at '$LSPROOTPATH' folder." "$NEXT"
-  cd "$LSPROOTPATH" && git fetch && git pull && sync
-fi
-
-if ! [ -d "$LSPROOTPATH" ]; then
-  print_log "$INFO" "Cloning LSP repo to '$LSPROOTPATH' folder." "$NEXT"
-  git clone --depth=1 "$GITREPO" "$LSPROOTPATH" && sync
-fi
-
-if [ -d "$LSPROOTPATH" ]; then
-  cd "$LSPROOTPATH" || exit
-fi
-
-print_log "$INFO" "Installing 'yarn' and '@vscode/vsce'." "$NEXT"
-npm install -g yarn @vscode/vsce && sync
-
-print_log "$INFO" "Running 'npm audit fix'." "$NEXT"
-npm audit fix && sync
-
-print_log "$INFO" "Running 'yarn install'." "$NEXT"
-yarn install && sync
-
-print_log "$INFO" "Running 'vsce package'." "$NEXT"
-vsce package && sync
-
-print_log "$INFO" "Uninstalling 'yarn' and '@vscode/vsce'." "$NEXT"
-npm uninstall -g yarn @vscode/vsce && sync
-
-if [ ${BACKEDUPNPM,,} = "y" ]; then
-  if [ -f "$HOMEPATH/.npmrc.old" ]; then
-    if [ -f "$HOMEPATH/.npmrc" ]; then
-      rm "$HOMEPATH/.npmrc" && sync
-    fi
-    print_log "$INFO" "Restoring '$HOMEPATH/.npmrc' from backup." "$NEXT"
-    mv "$HOMEPATH/.npmrc.old" "$HOMEPATH/.npmrc" && sync
-  fi
-fi
-
-if [ -f "$HOMEPATH/.local/bin/nwscript_ls" ]; then
-  print_log "$INFO" "Backing up '$HOMEPATH/.local/bin/nwscript_ls'" "$NEXT"
-  mv "$HOMEPATH/.local/bin/nwscript_ls" "$HOMEPATH/.local/bin/nwscript_ls.old" && sync
-fi
-
-if ! [ -f "$HOMEPATH/.local/bin/nwscript_ls" ]; then
-  print_log "$INFO" "Creating '$HOMEPATH/.local/bin/nwscript_ls'" "$NEXT"
-  touch "$HOMEPATH/.local/bin/nwscript_ls" && sync
-  printf "#!/usr/bin/env bash\n" | tee "$HOMEPATH/.local/bin/nwscript_ls" && sync
-  if ! [ "$NWN_LSP" = "" ]; then
-    printf "node \$NWN_LSP --stdio" | tee -a "$HOMEPATH/.local/bin/nwscript_ls" && sync
-  else
-    printf "node %s --stdio" "$LSPPATH" | tee -a "$HOMEPATH/.local/bin/nwscript_ls" && sync
-  fi
-fi
-
-chmod +x "$HOMEPATH/.local/bin/nwscript_ls"
-
-print_log "$SUCCESS" "LSP built." "$END"
+print_log "$SUCCESS" "LSP installed."
 exit 0
-
