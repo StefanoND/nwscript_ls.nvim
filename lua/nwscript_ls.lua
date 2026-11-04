@@ -65,6 +65,45 @@ M.setup = function(opts)
       end
     end,
   })
+
+  local ftmodule = "ftplugin.%s"
+
+  local function loadftmodule(ft, action)
+    local modname = ftmodule:format(ft)
+    local _, res = pcall(require, modname)
+    if type(res) == "table" then
+      if type(res[action]) == "function" then
+        res[action]()
+      end
+    elseif
+      type(res) == "string"
+      and not res:match("Module '" .. modname .. "' not found")
+      and not res:match("	no file")
+    then
+      print(res)
+    end
+  end
+
+  vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "Colorscheme" }, {
+    pattern = { "*" },
+    callback = function()
+      loadftmodule(vim.bo.filetype, "ftplugin")
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ "FileType" }, {
+    pattern = { "*" },
+    callback = function()
+      loadftmodule(vim.bo.filetype, "newfile")
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "VimEnter", "BufWinEnter", "Colorscheme" }, {
+    pattern = { "*" },
+    callback = function()
+      loadftmodule(vim.bo.filetype, "syntax")
+    end,
+  })
 end
 
 return M

@@ -366,6 +366,7 @@ Keymaps not listed here are using your own configured keymaps or the plugin's de
 
 ## Changelog
 
+    Added support for ftplugin
     Removed support for nvim-ufo's folding
 
     Added support for mini.icons
