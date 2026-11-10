@@ -4,32 +4,6 @@ local funcs = require("nwscript_ls.functions")
 
 M.setup = function()
   if funcs.is_loaded("nvim-treesitter") then
-    vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-      group = vim.api.nvim_create_augroup("nwscript_ft", { clear = true }),
-      pattern = { "*.nss" },
-      callback = function()
-        vim.bo.filetype = "nwscript"
-      end,
-    })
-
-    -- local parser = require("nvim-treesitter.parsers").get_parser_configs()
-    -- parser.nwscript = {
-    --   install_info = {
-    --     url = "https://github.com/StefanoND/tree-sitter-nwscript",
-    --     files = { "src/parser.c" },
-    --     generate_requires_npm = false,
-    --     requires_generate_from_grammar = false,
-    --   },
-    --   filestype = "nwscript",
-    -- }
-
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "TSUpdate",
-      callback = function()
-        require("nvim-treesitter.parsers").lua.install_info.generate = true
-      end,
-    })
-
     vim.api.nvim_create_autocmd("User", {
       pattern = "TSUpdate",
       callback = function()
@@ -46,10 +20,13 @@ M.setup = function()
       end,
     })
 
-    require("nvim-treesitter.config").setup()
     require("nvim-treesitter").install("nwscript")
-
-    -- require("nvim-treesitter.config").setup(opts)
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "nwscript" },
+      callback = function()
+        vim.treesitter.start()
+      end,
+    })
   end
 end
 
