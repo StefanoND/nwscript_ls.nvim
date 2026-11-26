@@ -76,17 +76,16 @@ return { -- Plug'n'play no extra configuration required
 <details><summary>My Personal Install</summary>
 
 ```lua
-return { -- NWScript
+return {
   "StefanoND/nwscript_ls.nvim",
-  filetype = { "nwscript", "nss" },
-  ft = { "nwscript", "nss" },
+  enabled = true,
   lazy = false,
-  -- event = "VeryLazy",
   dependencies = {
     "HiPhish/rainbow-delimiters.nvim",
     "L3MON4D3/LuaSnip",
     "akinsho/bufferline.nvim",
     "numToStr/Comment.nvim",
+    "JoosepAlviste/nvim-ts-context-commentstring",
     "nvim-lua/plenary.nvim",
     "echasnovski/mini.nvim", -- I use it with mock nvim-web-devicons
     "nvim-treesitter/nvim-treesitter",
@@ -97,61 +96,22 @@ return { -- NWScript
         require("neogen").setup()
       end,
     },
-    -- {
-    --   "StefanoND/vim-nwscript",
-    --   config = function()
-    --     vim.cmd([[
-    --       let g:nwscript#modules#enabled = ['ctags', 'format']
-    --       let g:nwscript#modules#disabled = ['fold']
-    --       let g:nwscript#format#textwidth = 105
-    --       let g:nwscript#format#options = 'croqwa2lj'
-    --       let g:nwscript#format#whitespace = 1
-    --     ]])
-    --   end,
-    -- },
   },
+  filetype = { "nwscript", "nss" },
+  ft = { "nwscript", "nss" },
   config = function()
-    require("nwscript").setup()
+    require("nwscript_ls").setup()
   end,
 }
 ```
 
   </details>
 
-<details><summary>If using mini.icons</summary>
-
-```lua
-  -- mini.lua
-  return {
-    "echasnovski/mini.nvim",
-    -- dependencies = "nvim-tree/nvim-web-devicons", -- Only needed if you want nvim-web-devicons installed
-    init = function()
-      package.preload["nvim-web-devicons"] = function()
-        require("mini.icons").mock_nvim_web_devicons()
-        return package.loaded["nvim-web-devicons"]
-      end
-    end,
-  }
-```
-
-</details>
-
 <a name="CONFIGURATION"></a>
 
 ## Configuration
 
 <a name="CONFIGURATION_LSPCONFIG"></a>
-
-### lpsconfig
-
-```lua
--- lua/plugins/lsp/servers/nwscript_ls.lua
-local lspconfig = require("lspconfig")
-
-return {
-  lspconfig.nwscript_ls.setup()
-}
-```
 
 <details><summary>Default Options</summary>
 
@@ -162,67 +122,40 @@ These are set automatically using the configuration [above](#CONFIGURATION_LSPCO
 Check out the [nwscript-ee-language-server](https://github.com/StefanoND/nwscript-ee-language-server) repo for more info
 
 ```lua
--- lua/plugins/lsp/servers/nwscript_ls.lua
-local lspconfig = require("lspconfig")
-
-local encoding = { offsetEncoding = { "utf-8", "utf-16", "utf-32" } }
-
-local workspace = {
-  configuration = true,
-  didChangeConfiguration = { dynamicRegistration = true },
-  didChangeWorkspaceFolders = { dynamicRegistration = true },
-  didChangeWatchedFiles = {
-    dynamicRegistration = true,
-    relativePatternSupport = false, -- Must be false if on Linux or BSD
-  },
-}
-
-local textDocument = {
-  completion = { completionItem = { snippetSupport = true } },
-  foldingRange = {
-    dynamicRegistration = false,
-    lineFoldingOnly = true,
-  },
-}
-
-local lspCapabilities = require("lspconfig.util").default_config.capabilities
-local cmpCapabilities = require("cmp_nvim_lsp").default_capabilities()
-local allCapabilities = vim.tbl_deep_extend("force", lspCapabilities, cmpCapabilities, encoding)
-
-allCapabilities.workspace = workspace
-allCapabilities.textDocument = textDocument
-
-local capabilities = require("blink.cmp").get_lsp_capabilities(allCapabilities)
-
+-- nvim/lsp/nwscript_ls.lua
+---@type vim.lsp.Config
 return {
-  lspconfig.nwscript_ls.setup({
-    capabilities = capabilities, -- Check out bellow for my personal capabilities
-    settings = {
-      single_file_support = true,
-      ["nwscript-ee-lsp"] = {
-        completion = {
-          addParamsToFunctions = true,
-        },
-        hovering = {
-          addCommentsToFunctions = true,
-        },
-        formatter = {
-          enabled = true,
-          verbose = true,
-          executable = "clang-format",
-        },
-        compiler = {
-          enabled = true,
-          os = vim.uv.os_uname().sysname,
-          verbose = true,
-          reportWarnings = true,
-          nwnHome = os.getenv("NWN_HOME"),
-          nwnInstallation = os.getenv("NWN_ROOT"),
-          workspaceIncludes = { vim.fn.getcwd() },
-        },
+  flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
+  name = "nwscript_ls",
+  cmd = { "nwscript_ls" },
+  filetypes = { "nss", "nwscript" },
+  root_markers = { "nasher.cfg", ".git" },
+  message_level = vim.lsp.protocol.MessageType.Error,
+  settings = {
+    single_file_support = true,
+    ["nwscript-ee-lsp"] = {
+      completion = {
+        addParamsToFunctions = true,
+      },
+      hovering = {
+        addCommentsToFunctions = true,
+      },
+      formatter = {
+        enabled = true,
+        verbose = true,
+        executable = "clang-format",
+      },
+      compiler = {
+        enabled = true,
+        os = vim.uv.os_uname().sysname,
+        verbose = true,
+        reportWarnings = true,
+        nwnHome = os.getenv("NWN_HOME"),
+        nwnInstallation = os.getenv("NWN_ROOT"),
+        workspaceIncludes = { vim.fn.getcwd() },
       },
     },
-  })
+  },
 }
 ```
 
@@ -333,6 +266,8 @@ Keymaps not listed here are using your own configured keymaps or the plugin's de
 <a name="CHANGELOG"></a>
 
 ## Changelog
+
+    Updated README.md to reflect changes done to how neovim works
 
     Added support for ftplugin
     Removed support for nvim-ufo's folding
